@@ -11,6 +11,15 @@ export function validateSummaryInput(text: string): void {
 }
 
 export function getSummarizationErrorMessage(error: Error): string {
+  // Server-provided, user-readable messages (e.g. validation errors).
+  if ((error as Error & { userFacing?: boolean }).userFacing) {
+    return error.message;
+  }
+
+  if (error.message.includes("Text is too short")) {
+    return `Texten är för kort. Skriv minst ${fileLimits.minTextLength} tecken.`;
+  }
+
   if (error.message.includes("Service Unavailable")) {
     return "Servern är för tillfället överbelastad. Försök igen om en stund.";
   }
